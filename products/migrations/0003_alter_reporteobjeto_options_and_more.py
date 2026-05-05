@@ -3,22 +3,28 @@
 from django.db import migrations, models
 
 
+# Esta migracion ajusta detalles del modelo ReporteObjeto:
+# nombres legibles, ordenamiento y restricciones en algunos campos.
 class Migration(migrations.Migration):
 
+    # Depende de la migracion donde se creo ReporteObjeto.
     dependencies = [
         ('products', '0002_reporteobjeto_delete_product'),
     ]
 
     operations = [
+        # Se agrega configuracion Meta para mejorar como se presenta el modelo.
         migrations.AlterModelOptions(
             name='reporteobjeto',
             options={'ordering': ['-fecha_reporte'], 'verbose_name': 'reporte de objeto', 'verbose_name_plural': 'reportes de objetos'},
         ),
+        # Se fija un estado por defecto para nuevos reportes.
         migrations.AlterField(
             model_name='reporteobjeto',
             name='estado',
             field=models.CharField(choices=[('perdido', 'Perdido'), ('encontrado', 'Encontrado'), ('entregado', 'Entregado')], default='perdido', max_length=20),
         ),
+        # Se limita el campo lugar a opciones concretas del sistema.
         migrations.AlterField(
             model_name='reporteobjeto',
             name='lugar',

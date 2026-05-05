@@ -7,10 +7,15 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
+# Este archivo prepara el proyecto para servidores ASGI.
+# Es util cuando la aplicacion se despliega con tecnologias asincronas.
+
 import os
 
 from django.core.asgi import get_asgi_application
 
+# Indica cual archivo de configuracion debe usar Django al iniciar.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proyecto1.settings')
 
+# application es el punto de entrada que usan los servidores ASGI.
 application = get_asgi_application()

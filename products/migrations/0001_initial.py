@@ -3,16 +3,21 @@
 from django.db import migrations, models
 
 
+# Esta migracion fue la primera version de la app.
+# Creo un modelo inicial llamado Product, previo al cambio de enfoque del proyecto.
 class Migration(migrations.Migration):
 
     initial = True
 
+    # Al ser la primera migracion, no depende de ninguna anterior.
     dependencies = [
     ]
 
+    # operations contiene los cambios que Django aplicara en la base de datos.
     operations = [
         migrations.CreateModel(
             name='Product',
+            # fields define las columnas que tendria esta tabla inicial.
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=100)),

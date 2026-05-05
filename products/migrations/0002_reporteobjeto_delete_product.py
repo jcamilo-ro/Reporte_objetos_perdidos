@@ -3,8 +3,11 @@
 from django.db import migrations, models
 
 
+# Esta migracion adapta la app al proyecto real:
+# crea ReporteObjeto y elimina el modelo anterior Product.
 class Migration(migrations.Migration):
 
+    # Esta migracion se ejecuta despues de la 0001.
     dependencies = [
         ('products', '0001_initial'),
     ]
@@ -12,6 +15,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.CreateModel(
             name='ReporteObjeto',
+            # Aqui se definen los campos iniciales del modelo de reportes.
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre_objeto', models.CharField(max_length=100)),
@@ -23,6 +27,7 @@ class Migration(migrations.Migration):
                 ('imagen', models.ImageField(blank=True, null=True, upload_to='reportes/')),
             ],
         ),
+        # Se elimina el modelo anterior porque ya no corresponde al proyecto.
         migrations.DeleteModel(
             name='Product',
         ),

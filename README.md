@@ -46,3 +46,9 @@ python manage.py createsuperuser
 ```
 
 Luego ingresa a `/admin/`.
+
+Apuntes
+
+28/04/2026
+
+

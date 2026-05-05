@@ -14,15 +14,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# Este archivo define las rutas principales del proyecto.
+# Desde aqui se conecta el panel admin y la API de la app products.
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# urlpatterns es la tabla principal de rutas del proyecto.
 urlpatterns = [
+    # Ruta del panel administrativo de Django.
     path('admin/', admin.site.urls),
+    # Ruta base de la API REST.
     path('api/', include('products.urls')),
 ]
 
+# En modo DEBUG se habilita el acceso a archivos de media durante desarrollo.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,19 +1,31 @@
+# Entornos virtuales y variables de entorno locales.
+.env
+.env.*
+!.env.example
 .venv/
-.env/
-venv/
 env/
+venv/
+ENV/
 
+# Base de datos y archivos subidos en desarrollo.
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Cache y archivos compilados de Python.
 __pycache__/
 *.py[cod]
 *$py.class
 
-db.sqlite3
-media/
+# Reportes y caches de pruebas.
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
 
-.env.local
-.env.*.local
+# Archivos temporales y logs.
+*.log
 
+# Configuracion de editores.
 .idea/
 .vscode/
-
-*.log
