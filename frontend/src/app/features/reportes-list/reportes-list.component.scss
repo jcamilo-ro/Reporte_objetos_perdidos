@@ -191,6 +191,15 @@ td small {
   background: #fafafa;
 }
 
+.row-pending-change {
+  background: #fffaf0;
+  box-shadow: inset 4px 0 0 #c47b00;
+}
+
+.row-pending-change td {
+  border-bottom-color: #f0d493;
+}
+
 .status {
   background: #eef7f2;
   border-radius: 999px;
@@ -237,6 +246,39 @@ td small {
   font-weight: 900;
   margin-left: 6px;
   padding: 4px 8px;
+}
+
+.pending-change-detail,
+.change-summary {
+  background: #fff8e7;
+  border: 1px solid #f1d995;
+  border-radius: 6px;
+  color: #5d4100;
+  display: grid;
+  gap: 4px;
+  line-height: 1.35;
+  margin-top: 10px;
+  padding: 9px 10px;
+}
+
+.pending-change-detail strong,
+.change-summary strong {
+  color: #6d4a00;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: uppercase;
+}
+
+.pending-change-detail span,
+.change-summary span {
+  font-weight: 900;
+}
+
+.pending-change-detail small,
+.change-summary small {
+  color: #6d4a00;
+  margin: 0;
 }
 
 .empty {

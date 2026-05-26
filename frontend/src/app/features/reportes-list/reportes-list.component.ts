@@ -100,6 +100,10 @@ export class ReportesListComponent {
     return `status status--${reporte.estado}`;
   }
 
+  etiquetaEstado(estado: EstadoReporte): string {
+    return this.estados.find((opcion) => opcion.valor === estado)?.etiqueta ?? estado;
+  }
+
   abrirFotografia(reporte: ReporteObjeto): void {
     this.fotografiaActiva = reporte;
     this.fotografiaConError = false;
