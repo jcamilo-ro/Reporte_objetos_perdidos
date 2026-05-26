@@ -107,16 +107,6 @@
             <td data-label="Estado">
               <span [class]="claseEstado(reporte)">{{ reporte.estado }}</span>
               <span *ngIf="reporte.validadoAdministrador" class="validated-badge">Validado</span>
-              <div *ngIf="tieneCambioEstadoVisible(reporte)" class="change-summary">
-                <strong>{{ reporte.cambioPendiente ? 'Cambio solicitado' : 'Cambio aprobado' }}</strong>
-                <span>
-                  {{ etiquetaEstado(cambioEstadoAnterior(reporte)!) }}
-                  ->
-                  {{ etiquetaEstado(cambioEstadoNuevo(reporte)!) }}
-                </span>
-                <small *ngIf="observacionCambioEstado(reporte)">{{ observacionCambioEstado(reporte) }}</small>
-                <small>{{ comentarioCambioEstado(reporte) }}</small>
-              </div>
               <label class="inline-control">
                 {{ modoAdministrador ? 'Cambiar estado' : 'Solicitar cambio de estado' }}
                 <select [ngModel]="reporte.estado" [disabled]="!!reporte.cambioPendiente && !modoAdministrador" (ngModelChange)="cambiarEstado(reporte, $event)">
