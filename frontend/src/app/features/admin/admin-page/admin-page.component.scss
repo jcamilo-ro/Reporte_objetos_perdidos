@@ -1,0 +1,64 @@
+/*
+  Estilos del panel administrador. El encabezado resume el rol y evita que la
+  página se sienta como una tabla sin contexto.
+*/
+.admin-header {
+  align-items: center;
+  background: #143f2b;
+  border-radius: 8px;
+  color: #fff;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 24px;
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.admin-header span {
+  color: #f2c84b;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+p {
+  color: rgba(255, 255, 255, 0.84);
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.admin-metrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(110px, 1fr));
+}
+
+.admin-metrics article {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.admin-metrics strong {
+  display: block;
+  font-size: 1.8rem;
+}
+
+@media (max-width: 860px) {
+  .admin-header,
+  .admin-metrics {
+    grid-template-columns: 1fr;
+  }
+}

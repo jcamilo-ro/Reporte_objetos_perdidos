@@ -1,0 +1,33 @@
+/*
+  Estilos globales de la aplicación. Definen una base visual limpia y accesible
+  para todos los componentes del frontend Angular.
+*/
+:root {
+  color-scheme: light;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(11, 107, 58, 0.08), transparent 34rem),
+    #f3f7f5;
+  color: #173729;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  letter-spacing: 0;
+}
+
+::selection {
+  background: #f2c84b;
+  color: #143f2b;
+}

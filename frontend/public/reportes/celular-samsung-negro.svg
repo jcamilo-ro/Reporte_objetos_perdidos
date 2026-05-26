@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#eef4f1"/>
+  <rect x="330" y="72" width="240" height="476" rx="34" fill="#101715"/>
+  <rect x="352" y="112" width="196" height="382" rx="14" fill="#202725"/>
+  <circle cx="450" cy="520" r="13" fill="#34433d"/>
+  <rect x="392" y="135" width="116" height="12" rx="6" fill="#44524c"/>
+  <text x="450" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#dfe7e3">Samsung</text>
+  <text x="450" y="344" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#96aaa1">celular negro</text>
+</svg>

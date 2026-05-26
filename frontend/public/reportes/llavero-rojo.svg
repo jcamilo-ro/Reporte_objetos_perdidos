@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#eef4f1"/>
+  <circle cx="390" cy="190" r="70" fill="none" stroke="#b43b35" stroke-width="24"/>
+  <rect x="430" y="250" width="44" height="230" rx="20" fill="#c6b36a"/>
+  <rect x="510" y="250" width="44" height="210" rx="20" fill="#d8c57a"/>
+  <rect x="390" y="238" width="190" height="44" rx="22" fill="#c5d2cb"/>
+  <text x="450" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#143f2b">Llavero rojo</text>
+</svg>

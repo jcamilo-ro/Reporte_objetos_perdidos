@@ -1,54 +1,97 @@
-# Sistema de reporte de objetos perdidos
+# Objetos Perdidos - Universidad de Narino
 
-Backend en Django y Django REST Framework para registrar reportes de objetos perdidos o encontrados dentro de la Universidad de Narino.
+Sistema academico para reportar, consultar y administrar objetos perdidos o encontrados. Incluye codigo unico por reporte, notificaciones por correo de Django, historial de modificaciones, deteccion simple de coincidencias y validacion administrativa.
 
 ## Funcionalidades
 
-- Crear, consultar, actualizar y eliminar reportes de objetos.
-- Clasificar reportes por categoria: celular, cuaderno, llaves, documentos u otros.
-- Registrar lugar: bloque, salon, biblioteca, cafeteria u otros espacios.
-- Manejar estados: perdido, encontrado y entregado.
-- Administrar los reportes desde el panel de administracion de Django.
-- Consultar la API REST desde `/api/reportes/`.
+- Reportar objeto perdido o encontrado con formulario por pasos.
+- Consultar reportes con filtros y buscador por frase natural.
+- Generar codigo unico tipo `REP-2026-000001`.
+- Enviar correos por consola en desarrollo y por SMTP con variables de entorno.
+- Administrar reportes, validar casos y ocultarlos de la vista publica con confirmacion.
+- Guardar historial de creacion, edicion, validacion, cambios de estado y eliminacion.
 
-## Instalacion local
+## Instalacion
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py runserver
 ```
+
+Frontend:
+
+```bash
+cd frontend
+npm install
+```
+
+## Ejecucion
+
+Backend:
+
+```bash
+.venv\Scripts\python.exe manage.py runserver
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm start -- --host 127.0.0.1 --port 4200
+```
+
+## Migraciones y pruebas
+
+Crear migraciones despues de cambiar modelos:
+
+```bash
+.venv\Scripts\python.exe manage.py makemigrations
+```
+
+Aplicar migraciones:
+
+```bash
+.venv\Scripts\python.exe manage.py migrate
+```
+
+Ejecutar pruebas:
+
+```bash
+.venv\Scripts\python.exe manage.py test products
+```
+
+## Correo
+
+En desarrollo los correos se imprimen en consola:
+
+```env
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+DEFAULT_FROM_EMAIL=Sistema de reportes <admin@example.com>
+```
+
+Para SMTP real:
+
+```env
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=usuario@example.com
+EMAIL_HOST_PASSWORD=clave-segura
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL=Sistema de reportes <admin@example.com>
+```
+
+No se usa WhatsApp, SMS ni plugins externos de Gmail.
 
 ## Endpoints principales
 
-- `GET /api/reportes/`: lista reportes.
-- `POST /api/reportes/`: crea un reporte.
-- `GET /api/reportes/{id}/`: consulta un reporte.
-- `PUT /api/reportes/{id}/`: actualiza un reporte completo.
-- `PATCH /api/reportes/{id}/`: actualiza parcialmente un reporte.
-- `DELETE /api/reportes/{id}/`: elimina un reporte.
+- `GET /api/reportes/`
+- `GET /api/reportes/?q=Celular Samsung negro`
+- `POST /api/reportes/`
+- `PATCH /api/reportes/{id}/`
+- `POST /api/reportes/{id}/validar-admin/`
+- `POST /api/reportes/{id}/ocultar-publico/`
 
-Tambien se pueden filtrar reportes con parametros:
-
-- `/api/reportes/?estado=perdido`
-- `/api/reportes/?categoria=documentos`
-- `/api/reportes/?lugar=biblioteca`
-- `/api/reportes/?q=carnet`
-
-## Administracion
-
-Para crear un usuario administrador:
-
-```bash
-python manage.py createsuperuser
-```
-
-Luego ingresa a `/admin/`.
-
-Apuntes
-
-28/04/2026
-
-
+La guia completa para exposicion esta en `README_EXPOSICION.md`.

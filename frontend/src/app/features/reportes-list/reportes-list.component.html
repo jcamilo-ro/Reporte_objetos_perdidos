@@ -1,0 +1,240 @@
+<!-- Consulta y administración de reportes con filtros y búsqueda simple. -->
+<section class="list-card" [id]="modoAdministrador ? 'admin-reportes' : 'consulta'">
+  <div class="list-card__header">
+    <div>
+      <span>{{ modoAdministrador ? 'Panel administrador' : 'Consulta de reportes' }}</span>
+      <h2>{{ modoAdministrador ? 'Administración y trazabilidad' : 'Busca antes de reportar' }}</h2>
+      <p>
+        {{
+          modoAdministrador
+            ? 'Valida reportes, revisa historial y elimina solo objetos encontrados ya confirmados.'
+            : 'Busca por palabras clave, por ejemplo: "Celular Samsung negro".'
+        }}
+      </p>
+    </div>
+
+    <div class="list-card__actions">
+      <button class="button button--primary" type="button" (click)="irACrearReporte()">Crear nuevo reporte</button>
+      <button class="button button--ghost" type="button" (click)="limpiarFiltros()">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="filters" aria-label="Filtros de reportes">
+    <label class="filters__search">
+      Buscador simple
+      <input
+        type="search"
+        [(ngModel)]="filtros.busqueda"
+        (ngModelChange)="actualizarFiltros()"
+        placeholder="Ej. Celular Samsung negro"
+      />
+    </label>
+
+    <label>
+      Estado
+      <select [(ngModel)]="filtros.estado" (ngModelChange)="actualizarFiltros()">
+        <option value="">Todos</option>
+        <option *ngFor="let estado of estados" [value]="estado.valor">{{ estado.etiqueta }}</option>
+      </select>
+    </label>
+
+    <label>
+      Categoría
+      <select [(ngModel)]="filtros.categoria" (ngModelChange)="actualizarFiltros()">
+        <option value="">Todas</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.valor">{{ categoria.etiqueta }}</option>
+      </select>
+    </label>
+
+    <label>
+      Tipo
+      <select [(ngModel)]="filtros.tipo" (ngModelChange)="actualizarFiltros()">
+        <option value="">Todos</option>
+        <option *ngFor="let tipo of tipos" [value]="tipo.valor">{{ tipo.etiqueta }}</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="table-wrap" *ngIf="reportes.length; else sinResultados">
+    <table>
+      <thead>
+        <tr>
+          <th>Caso</th>
+          <th>Estado</th>
+          <th>Foto</th>
+          <th>Lugar y fecha</th>
+          <th>Personas</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let reporte of reportes">
+          <tr [class.row-hidden]="reporte.eliminadoVistaPublica">
+            <td data-label="Caso">
+              <div class="case-title">
+                <span *ngIf="reporte.cambioPendiente" class="alert-dot" aria-hidden="true">!</span>
+                <strong>{{ reporte.nombre }}</strong>
+              </div>
+              <small *ngIf="reporte.codigo">Código: {{ reporte.codigo }}</small>
+              <small>{{ reporte.descripcion }}</small>
+              <small>{{ reporte.categoria }} | {{ reporte.tipo === 'perdido' ? 'Objeto perdido' : 'Objeto encontrado' }}</small>
+              <p
+                *ngIf="reporte.cambioPendiente"
+                [class]="reporte.cambioPendiente.tipoSolicitud === 'edicion' ? 'pending-alert pending-alert--edit' : 'pending-alert pending-alert--state'"
+              >
+                {{
+                  reporte.cambioPendiente.tipoSolicitud === 'edicion'
+                    ? 'Edición pendiente de revisión administrativa.'
+                    : 'Cambio de estado pendiente de aprobación.'
+                }}
+              </p>
+              <p *ngIf="reporte.eliminadoVistaPublica" class="hidden-alert">Oculto de la vista pública.</p>
+            </td>
+
+            <td data-label="Estado">
+              <span [class]="claseEstado(reporte)">{{ reporte.estado }}</span>
+              <span *ngIf="reporte.validadoAdministrador" class="validated-badge">Validado</span>
+              <label class="inline-control">
+                {{ modoAdministrador ? 'Cambiar estado' : 'Solicitar cambio de estado' }}
+                <select [ngModel]="reporte.estado" [disabled]="!!reporte.cambioPendiente && !modoAdministrador" (ngModelChange)="cambiarEstado(reporte, $event)">
+                  <option *ngFor="let estado of estados" [value]="estado.valor">{{ estado.etiqueta }}</option>
+                </select>
+              </label>
+            </td>
+
+            <td data-label="Foto">
+              <button
+                *ngIf="reporte.imagenNombre; else sinFoto"
+                class="photo-button"
+                type="button"
+                title="Ver fotografía"
+                aria-label="Ver fotografía del objeto"
+                (click)="abrirFotografia(reporte)"
+              >
+                Ver
+              </button>
+              <ng-template #sinFoto>
+                <span class="photo-empty">Sin foto</span>
+              </ng-template>
+            </td>
+
+            <td data-label="Lugar y fecha">
+              <strong>{{ reporte.lugar }}</strong>
+              <small>{{ reporte.fecha | date: 'dd/MM/yyyy' }}</small>
+              <small *ngIf="reporte.estado === 'entregado' && reporte.entregadoEn">Entregado: {{ reporte.entregadoEn | date: 'dd/MM/yyyy' }}</small>
+            </td>
+
+            <td data-label="Personas">
+              <ng-container *ngIf="reporte.tipo === 'perdido'; else personaEncontrada">
+                <strong>Perdió: {{ reporte.perdidoPor.nombreCompleto }}</strong>
+                <small>{{ reporte.perdidoPor.tipoPersona }} | {{ reporte.perdidoPor.contacto }}</small>
+              </ng-container>
+              <ng-template #personaEncontrada>
+                <strong>Encontró: {{ reporte.encontradoPor.nombreCompleto }}</strong>
+                <small>{{ reporte.encontradoPor.tipoPersona }} | {{ reporte.encontradoPor.contacto }}</small>
+              </ng-template>
+            </td>
+
+            <td data-label="Acciones">
+              <div class="actions">
+                <button type="button" title="Ver detalles" aria-label="Ver detalles" (click)="alternarDetalle(reporte)">🔍</button>
+                <button type="button" title="Editar reporte" aria-label="Editar reporte" (click)="editar(reporte)">✏</button>
+                <button
+                  *ngIf="modoAdministrador && !reporte.validadoAdministrador"
+                  type="button"
+                  title="Validar reporte"
+                  aria-label="Validar reporte"
+                  (click)="validarReporte.emit(reporte)"
+                >
+                  ✓
+                </button>
+                <button
+                  *ngIf="modoAdministrador"
+                  type="button"
+                  title="Eliminar de vista pública"
+                  aria-label="Eliminar de vista pública"
+                  (click)="eliminar(reporte)"
+                >
+                  🗑
+                </button>
+                <button
+                  *ngIf="modoAdministrador && reporte.eliminadoVistaPublica"
+                  type="button"
+                  title="Restaurar en vista pública"
+                  aria-label="Restaurar en vista pública"
+                  (click)="restaurarReporte.emit(reporte)"
+                >
+                  ↺
+                </button>
+              </div>
+
+              <div *ngIf="modoAdministrador && reporte.cambioPendiente" class="approval-actions">
+                <small>
+                  {{
+                    reporte.cambioPendiente.tipoSolicitud === 'edicion'
+                      ? 'Solicitud de edición de datos pendiente.'
+                      : 'Estado anterior: ' + reporte.cambioPendiente.estadoAnterior + ' | solicitado: ' + reporte.cambioPendiente.estadoSolicitado
+                  }}
+                </small>
+                <small *ngIf="reporte.cambioPendiente.observacion">Observación: {{ reporte.cambioPendiente.observacion }}</small>
+                <button type="button" title="Aprobar cambio" (click)="aprobarCambio.emit(reporte)">✓ Aprobar</button>
+                <button type="button" title="Rechazar cambio" (click)="rechazarCambio.emit(reporte)">Rechazar</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="reporteDetalleId === reporte.id" class="detail-row">
+            <td colspan="6">
+              <section class="detail-panel">
+                <div>
+                  <h3>Detalle del caso</h3>
+                  <p><strong>Observaciones:</strong> {{ reporte.observaciones || 'Sin observaciones.' }}</p>
+                  <p>
+                    <strong>Manejo:</strong>
+                    {{ reporte.accionObjeto === 'otro_lugar' ? 'Se deja en: ' + (reporte.lugarEntrega || 'lugar por confirmar') : 'Entrega directa al dueño' }}
+                  </p>
+                  <p *ngIf="reporte.imagenNombre"><strong>Imagen:</strong> {{ reporte.imagenNombre }}</p>
+                </div>
+
+                <div *ngIf="modoAdministrador">
+                  <h3>Historial de cambios</h3>
+                  <ol class="history">
+                    <li *ngFor="let cambio of reporte.historial">
+                      <strong>{{ cambio.tipoCambio }}</strong>
+                      <span>{{ cambio.fecha | date: 'dd/MM/yyyy, h:mm a' }} | {{ cambio.rol }}</span>
+                      <small>Campo: {{ cambio.campo }}. Antes: {{ cambio.valorAnterior }}. Después: {{ cambio.valorNuevo }}. Aprobación: {{ cambio.aprobacion }}.</small>
+                    </li>
+                  </ol>
+                </div>
+              </section>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #sinResultados>
+    <div class="empty">
+      <strong>No hay reportes que coincidan con la búsqueda.</strong>
+      <span>Prueba con menos palabras o crea un nuevo reporte para dejar el caso registrado.</span>
+    </div>
+  </ng-template>
+
+  <div class="photo-modal" *ngIf="fotografiaActiva" role="dialog" aria-modal="true" aria-label="Fotografía del objeto">
+    <div class="photo-modal__content">
+      <button type="button" class="photo-modal__close" aria-label="Cerrar fotografía" (click)="cerrarFotografia()">×</button>
+      <span>Fotografía del reporte</span>
+      <h3>{{ fotografiaActiva.nombre }}</h3>
+      <div class="photo-preview" *ngIf="!fotografiaConError; else fotoNoDisponible">
+        <img [src]="rutaFotografia(fotografiaActiva)" [alt]="'Fotografía de ' + fotografiaActiva.nombre" (error)="marcarFotoConError()" />
+      </div>
+      <ng-template #fotoNoDisponible>
+        <div class="photo-placeholder">
+          <strong>{{ fotografiaActiva.imagenNombre }}</strong>
+          <small>No se encontró el archivo de imagen. Si es una foto subida por Django, verifica que el backend esté corriendo en http://127.0.0.1:8000.</small>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>

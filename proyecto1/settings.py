@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Este archivo centraliza la configuracion general del proyecto Django:
@@ -126,3 +127,21 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Tipo de llave primaria por defecto para los modelos nuevos.
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+def env_bool(nombre, defecto=False):
+    valor = os.environ.get(nombre)
+    if valor is None:
+        return defecto
+    return valor.strip().lower() in {'1', 'true', 'yes', 'si', 'on'}
+
+
+# Correo: en desarrollo se imprime en consola. Para SMTP real basta con definir
+# estas variables de entorno, sin cambiar la logica de la aplicacion.
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Sistema de reportes <admin@example.com>')

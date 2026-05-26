@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#eef4f1"/>
+  <rect x="250" y="260" width="330" height="105" rx="28" fill="#b8c2bf"/>
+  <rect x="580" y="280" width="90" height="65" rx="10" fill="#75827d"/>
+  <rect x="602" y="298" width="18" height="18" fill="#dfe7e3"/>
+  <rect x="632" y="298" width="18" height="18" fill="#dfe7e3"/>
+  <text x="450" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#143f2b">Memoria USB</text>
+</svg>

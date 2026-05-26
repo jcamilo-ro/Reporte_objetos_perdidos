@@ -1,0 +1,116 @@
+<!--
+  Página principal del sistema. Presenta el propósito de la herramienta, ofrece
+  accesos claros y prioriza la consulta de reportes antes de crear uno nuevo.
+-->
+<section class="hero" id="inicio">
+  <div class="hero__content">
+    <span class="hero__eyebrow">Gestión universitaria</span>
+    <h1>Objetos perdidos y encontrados</h1>
+    <p>
+      Sistema para reportar, consultar y dar seguimiento a objetos perdidos o
+      encontrados dentro de la Universidad de Nariño.
+    </p>
+
+    <div class="hero__actions" aria-label="Acciones principales">
+      <a class="button button--primary" href="#consulta">Reportar objeto</a>
+      <button class="button button--secondary" type="button" (click)="ingresarComoAdministrador()">Ingresar como administrador</button>
+    </div>
+
+    <div class="hero__links" aria-label="Accesos rápidos">
+      <a href="#consulta">Consultar reportes</a>
+      <a href="#registro">Registrar nuevo caso</a>
+    </div>
+  </div>
+
+  <div class="summary" aria-label="Resumen de reportes">
+    <article>
+      <span>Total</span>
+      <strong>{{ resumen().total }}</strong>
+    </article>
+    <article>
+      <span>Pendientes</span>
+      <strong>{{ resumen().pendientes }}</strong>
+    </article>
+    <article>
+      <span>Perdidos</span>
+      <strong>{{ resumen().perdidos }}</strong>
+    </article>
+    <article>
+      <span>Encontrados</span>
+      <strong>{{ resumen().encontrados }}</strong>
+    </article>
+    <article class="summary__wide">
+      <span>Entregados</span>
+      <strong>{{ resumen().entregados }}</strong>
+    </article>
+    <article class="summary__wide">
+      <span>Por confirmar</span>
+      <strong>{{ resumen().pendientesRevision }}</strong>
+    </article>
+  </div>
+</section>
+
+<app-reportes-list
+  [reportes]="reportesFiltrados()"
+  [filtros]="filtros()"
+  (filtrosCambiados)="aplicarFiltros($event)"
+  (crearNuevoReporte)="irARegistro()"
+  (editarReporte)="editarReporte($event)"
+  (eliminarReporte)="eliminarReporte($event)"
+  (estadoCambiado)="cambiarEstado($event.reporte, $event.estado, false, $event.observacion)"
+/>
+
+<section class="form-layout" aria-label="Registro de objetos">
+  <app-reporte-form
+    [reporteEditar]="reporteEditar()"
+    (reporteCreado)="crearReporte($event)"
+    (reporteActualizado)="actualizarReporte($event)"
+    (edicionCancelada)="limpiarEdicion()"
+  />
+</section>
+
+<section class="admin-panel" id="administracion" aria-label="Acceso de administración">
+  <div>
+    <span>Administración</span>
+    <h2>Seguimiento académico de reportes</h2>
+    <p>
+      Este modo resume el estado general de los casos para una revisión rápida.
+      La gestión detallada se realiza desde la tabla de consulta y el formulario
+      de registro.
+    </p>
+  </div>
+
+  <div class="admin-panel__metrics">
+    <strong>{{ resumen().pendientes }}</strong>
+    <span>casos pendientes por seguimiento</span>
+  </div>
+</section>
+
+<section *ngIf="modoAdministrador()" class="admin-mode">
+  <div class="admin-mode__header">
+    <div>
+      <span>Modo administrador activo</span>
+      <h2>Control de cambios y trazabilidad</h2>
+      <p>
+        Aquí se conservan reportes eliminados de la vista pública, entregados
+        antiguos y solicitudes de cambio de estado pendientes.
+      </p>
+    </div>
+
+    <button type="button" (click)="salirDeAdministracion()">Salir de administración</button>
+  </div>
+
+  <app-reportes-list
+    [reportes]="reportesAdminFiltrados()"
+    [filtros]="filtrosAdmin()"
+    [modoAdministrador]="true"
+    (filtrosCambiados)="aplicarFiltrosAdmin($event)"
+    (crearNuevoReporte)="irARegistro()"
+    (editarReporte)="editarReporte($event)"
+    (eliminarReporte)="eliminarReporte($event)"
+    (estadoCambiado)="cambiarEstado($event.reporte, $event.estado, true)"
+    (aprobarCambio)="aprobarCambio($event)"
+    (rechazarCambio)="rechazarCambio($event)"
+    (restaurarReporte)="restaurarReporte($event)"
+  />
+</section>

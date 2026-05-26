@@ -1,0 +1,41 @@
+<!-- Panel administrativo simulado. Muestra métricas compactas y la tabla total. -->
+<section class="admin-header">
+  <div>
+    <span>Modo administrador</span>
+    <h1>Administración y trazabilidad</h1>
+    <p>
+      Revisa todos los reportes, aprueba cambios sensibles y conserva evidencia
+      de acciones públicas y administrativas.
+    </p>
+  </div>
+
+  <div class="admin-metrics">
+    <article>
+      <span>Total</span>
+      <strong>{{ resumen().total }}</strong>
+    </article>
+    <article>
+      <span>Por aprobar</span>
+      <strong>{{ resumen().pendientesRevision }}</strong>
+    </article>
+    <article>
+      <span>Ocultos</span>
+      <strong>{{ resumen().eliminados }}</strong>
+    </article>
+  </div>
+</section>
+
+<app-reportes-list
+  [reportes]="reportes()"
+  [filtros]="filtros()"
+  [modoAdministrador]="true"
+  (filtrosCambiados)="aplicarFiltros($event)"
+  (crearNuevoReporte)="crearNuevoReporte()"
+  (editarReporte)="editarReporte($event)"
+  (eliminarReporte)="eliminarReporte($event)"
+  (estadoCambiado)="cambiarEstado($event)"
+  (aprobarCambio)="aprobarCambio($event)"
+  (rechazarCambio)="rechazarCambio($event)"
+  (restaurarReporte)="restaurarReporte($event)"
+  (validarReporte)="validarReporte($event)"
+/>

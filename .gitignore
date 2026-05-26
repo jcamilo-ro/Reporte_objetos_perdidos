@@ -29,3 +29,6 @@ htmlcov/
 # Configuracion de editores.
 .idea/
 .vscode/
+
+# Guia local de exposicion academica; no debe subirse al repositorio.
+frontend/README_EXPOSICION.md

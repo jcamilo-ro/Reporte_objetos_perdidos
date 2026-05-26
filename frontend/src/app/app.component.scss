@@ -1,0 +1,9 @@
+/*
+  Contenedor general de la aplicación. Controla el ancho útil del panel sin
+  afectar los componentes internos reutilizables.
+*/
+.app-shell {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: clamp(18px, 4vw, 40px);
+}

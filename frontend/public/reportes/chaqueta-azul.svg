@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#eef4f1"/>
+  <path d="M320 160 430 120h40l110 40 80 260-105 30-35-130v200H380V320l-35 130-105-30 80-260z" fill="#2d6094"/>
+  <path d="M450 130v390" stroke="#c9d5df" stroke-width="8"/>
+  <text x="450" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#143f2b">Chaqueta azul</text>
+</svg>

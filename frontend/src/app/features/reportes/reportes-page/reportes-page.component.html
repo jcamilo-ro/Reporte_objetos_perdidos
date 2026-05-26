@@ -1,0 +1,10 @@
+<!-- Página pública de consulta. Reutiliza el componente de tabla CRUD. -->
+<app-reportes-list
+  [reportes]="reportes()"
+  [filtros]="filtros()"
+  (filtrosCambiados)="aplicarFiltros($event)"
+  (crearNuevoReporte)="crearNuevoReporte()"
+  (editarReporte)="editarReporte($event)"
+  (eliminarReporte)="eliminarReporte($event)"
+  (estadoCambiado)="cambiarEstado($event)"
+/>

@@ -1,0 +1,21 @@
+<!--
+  Barra de navegación principal. Usa rutas de Angular para separar la aplicación
+  en vistas claras sin usar logos oficiales de la Universidad.
+-->
+<header class="app-header">
+  <a class="brand" routerLink="/inicio" aria-label="Ir al inicio">
+    <span class="brand__mark">U</span>
+    <span>
+      <strong>Objetos Perdidos</strong>
+      <small>Universidad de Nariño</small>
+    </span>
+  </a>
+
+  <nav class="nav" aria-label="Navegación principal">
+    <a routerLink="/inicio" routerLinkActive="nav__link--active">Inicio</a>
+    <a routerLink="/reportes" routerLinkActive="nav__link--active">Consultar reportes</a>
+    <a routerLink="/reportar" routerLinkActive="nav__link--active">Reportar objeto</a>
+    <a routerLink="/admin" routerLinkActive="nav__link--active">Administración</a>
+    <button *ngIf="authService.sesionActiva()" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+  </nav>
+</header>

@@ -1,0 +1,223 @@
+<!-- Formulario público por pasos y edición administrativa directa. -->
+<section class="form-card" id="registro">
+  <div class="form-card__heading">
+    <span>Reportar objeto</span>
+    <h1>{{ reporteEditar ? 'Editar reporte' : 'Nuevo reporte' }}</h1>
+    <p>
+      {{
+        modoAdministrador
+          ? 'Edita directamente la sección necesaria y guarda los cambios.'
+          : 'Completa solo los pasos que aplican al tipo de reporte.'
+      }}
+    </p>
+    <p *ngIf="reporteEditar?.codigo"><strong>Código:</strong> {{ reporteEditar?.codigo }}</p>
+  </div>
+
+  <ol class="steps" aria-label="Progreso del formulario">
+    <li [class.active]="paso() === 1" (click)="seleccionarPaso(1)">Tipo</li>
+    <li [class.active]="paso() === 2" (click)="seleccionarPaso(2)">Objeto</li>
+    <li [class.active]="paso() === 3" (click)="seleccionarPaso(3)">
+      {{ formulario.controls.tipo.value === 'perdido' ? 'Quién perdió' : 'Quién encontró' }}
+    </li>
+    <li [class.active]="paso() === 4" (click)="seleccionarPaso(4)">Resumen</li>
+  </ol>
+
+  <section class="created-card" *ngIf="reporteConfirmado() as confirmado" aria-live="polite">
+    <span>Reporte creado</span>
+    <h2>{{ confirmado.tipo === 'perdido' ? 'Objeto perdido registrado' : 'Objeto encontrado registrado' }}</h2>
+    <p>
+      El reporte de <strong>{{ confirmado.nombre }}</strong> fue guardado correctamente.
+      Puedes consultar la lista para verificarlo o salir del formulario.
+    </p>
+    <div class="created-card__actions">
+      <button type="button" class="submit-button" (click)="irAConsultarReportes()">Consultar reportes</button>
+      <button type="button" class="secondary-button" (click)="salirDelFormulario()">Salir</button>
+    </div>
+  </section>
+
+  <section class="created-card" *ngIf="edicionConfirmada() as confirmadoEdicion" aria-live="polite">
+    <span>Edicion guardada</span>
+    <h2>{{ confirmadoEdicion.titulo }}</h2>
+    <p>{{ confirmadoEdicion.mensaje }}</p>
+    <div class="created-card__actions">
+      <button type="button" class="submit-button" (click)="irAConsultarReportes()">Consultar reportes</button>
+      <button type="button" class="secondary-button" (click)="salirDelFormulario()">Salir</button>
+    </div>
+  </section>
+
+  <p class="success" *ngIf="mensajeExito() && !reporteConfirmado() && !edicionConfirmada()">{{ mensajeExito() }}</p>
+
+  <form *ngIf="!reporteConfirmado() && !edicionConfirmada()" [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+    <fieldset *ngIf="paso() === 1" class="choice-panel">
+      <legend>¿Qué ocurrió?</legend>
+      <div class="report-type">
+        <button
+          type="button"
+          class="report-type__option report-type__option--lost"
+          [class.report-type__option--active]="formulario.controls.tipo.value === 'perdido'"
+          (click)="seleccionarTipo('perdido')"
+        >
+          <strong>Perdí un objeto</strong>
+          <span>El estado inicial será Perdido.</span>
+        </button>
+
+        <button
+          type="button"
+          class="report-type__option report-type__option--found"
+          [class.report-type__option--active]="formulario.controls.tipo.value === 'encontrado'"
+          (click)="seleccionarTipo('encontrado')"
+        >
+          <strong>Encontré un objeto</strong>
+          <span>El estado inicial será Encontrado.</span>
+        </button>
+      </div>
+    </fieldset>
+
+    <fieldset *ngIf="paso() === 2">
+      <legend>Datos del objeto</legend>
+      <div class="form-grid">
+        <label>
+          Nombre del objeto
+          <input type="text" formControlName="nombre" placeholder="Ej. Carnet, llaves, libro" />
+          <small *ngIf="campoInvalido('nombre')">{{ mensajeError('nombre', 'El nombre del objeto') }}</small>
+        </label>
+
+        <label>
+          Categoría
+          <select formControlName="categoria">
+            <option *ngFor="let categoria of categorias" [value]="categoria.valor">{{ categoria.etiqueta }}</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Descripción
+        <textarea rows="4" formControlName="descripcion" placeholder="Color, marca, señales particulares o contenido visible"></textarea>
+        <small *ngIf="campoInvalido('descripcion')">{{ mensajeError('descripcion', 'La descripción') }}</small>
+      </label>
+
+      <div class="form-grid">
+        <label>
+          Lugar donde se perdió o encontró
+          <input type="text" formControlName="lugar" placeholder="Ej. Biblioteca, bloque 6, cafetería" />
+          <small *ngIf="campoInvalido('lugar')">{{ mensajeError('lugar', 'El lugar') }}</small>
+        </label>
+
+        <label>
+          Fecha
+          <input type="date" formControlName="fecha" />
+        </label>
+      </div>
+
+      <label class="upload-zone">
+        <input type="file" accept="image/*" (change)="seleccionarImagen($event)" />
+        <strong>Seleccionar fotografía del objeto</strong>
+        <span>{{ formulario.controls.imagenNombre.value || 'Ninguna fotografía seleccionada' }}</span>
+      </label>
+
+      <label>
+        Observaciones
+        <textarea rows="3" formControlName="observaciones" placeholder="Notas adicionales o condiciones del caso"></textarea>
+      </label>
+    </fieldset>
+
+    <fieldset *ngIf="paso() === 3 && formulario.controls.tipo.value === 'perdido'" formGroupName="perdidoPor">
+      <legend>Datos de quién perdió el objeto</legend>
+      <div class="form-grid form-grid--three">
+        <label>
+          Nombre completo
+          <input type="text" formControlName="nombreCompleto" />
+          <small *ngIf="campoInvalido('perdidoPor.nombreCompleto')">{{ mensajeError('perdidoPor.nombreCompleto', 'El nombre') }}</small>
+        </label>
+        <label>
+          Tipo de persona
+          <select formControlName="tipoPersona">
+            <option *ngFor="let tipoPersona of tiposPersona" [value]="tipoPersona.valor">{{ tipoPersona.etiqueta }}</option>
+          </select>
+        </label>
+        <label>
+          Correo
+          <input type="email" formControlName="contacto" placeholder="correo@ejemplo.com" />
+          <small *ngIf="campoInvalido('perdidoPor.contacto')">{{ mensajeError('perdidoPor.contacto', 'El correo') }}</small>
+        </label>
+        <label>
+          Celular opcional
+          <input type="tel" formControlName="celular" placeholder="Opcional" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset *ngIf="paso() === 3 && formulario.controls.tipo.value === 'encontrado'">
+      <legend>Datos de quién encontró el objeto</legend>
+      <div formGroupName="encontradoPor" class="form-grid form-grid--three">
+        <label>
+          Nombre completo
+          <input type="text" formControlName="nombreCompleto" />
+          <small *ngIf="campoInvalido('encontradoPor.nombreCompleto')">{{ mensajeError('encontradoPor.nombreCompleto', 'El nombre') }}</small>
+        </label>
+        <label>
+          Tipo de persona
+          <select formControlName="tipoPersona">
+            <option *ngFor="let tipoPersona of tiposPersona" [value]="tipoPersona.valor">{{ tipoPersona.etiqueta }}</option>
+          </select>
+        </label>
+        <label>
+          Correo
+          <input type="email" formControlName="contacto" placeholder="correo@ejemplo.com" />
+          <small *ngIf="campoInvalido('encontradoPor.contacto')">{{ mensajeError('encontradoPor.contacto', 'El correo') }}</small>
+        </label>
+        <label>
+          Celular opcional
+          <input type="tel" formControlName="celular" placeholder="Opcional" />
+        </label>
+      </div>
+
+      <div class="radio-group">
+        <label *ngFor="let accion of accionesObjeto">
+          <input type="radio" formControlName="accionObjeto" [value]="accion.valor" />
+          <span>{{ accion.etiqueta }}</span>
+        </label>
+      </div>
+
+      <label *ngIf="formulario.controls.accionObjeto.value === 'otro_lugar'">
+        ¿Dónde lo dejarás?
+        <input type="text" formControlName="lugarEntrega" placeholder="Ej. Oficina de Ingeniería, biblioteca, portería" />
+        <small *ngIf="campoInvalido('lugarEntrega')">{{ mensajeError('lugarEntrega', 'El lugar de entrega') }}</small>
+      </label>
+    </fieldset>
+
+    <fieldset *ngIf="paso() === 4" class="summary-panel">
+      <legend>Resumen antes de guardar</legend>
+      <dl>
+        <div><dt>Tipo</dt><dd>{{ formulario.controls.tipo.value === 'perdido' ? 'Perdí un objeto' : 'Encontré un objeto' }}</dd></div>
+        <div *ngIf="reporteEditar?.codigo"><dt>Código</dt><dd>{{ reporteEditar?.codigo }}</dd></div>
+        <div><dt>Estado inicial</dt><dd>{{ formulario.controls.estado.value }}</dd></div>
+        <div><dt>Objeto</dt><dd>{{ formulario.controls.nombre.value }}</dd></div>
+        <div><dt>Lugar</dt><dd>{{ formulario.controls.lugar.value }}</dd></div>
+        <div *ngIf="formulario.controls.tipo.value === 'perdido'"><dt>Quién perdió</dt><dd>{{ formulario.controls.perdidoPor.controls.nombreCompleto.value }}</dd></div>
+        <div *ngIf="formulario.controls.tipo.value === 'encontrado'"><dt>Quién encontró</dt><dd>{{ formulario.controls.encontradoPor.controls.nombreCompleto.value }}</dd></div>
+        <div><dt>Correo</dt><dd>{{ formulario.controls.tipo.value === 'perdido' ? formulario.controls.perdidoPor.controls.contacto.value : formulario.controls.encontradoPor.controls.contacto.value }}</dd></div>
+        <div><dt>Fotografía</dt><dd>{{ formulario.controls.imagenNombre.value || 'No seleccionada' }}</dd></div>
+      </dl>
+
+      <section *ngIf="coincidenciasSugeridas().length" class="matches-panel" aria-label="Coincidencias sugeridas">
+        <span>Asistente de coincidencias</span>
+        <h2>Este objeto podría coincidir con un reporte encontrado</h2>
+        <article *ngFor="let coincidencia of coincidenciasSugeridas()">
+          <strong>{{ coincidencia.reporte.nombre }}</strong>
+          <small>{{ coincidencia.reporte.lugar }} | {{ coincidencia.puntaje }}% de coincidencia</small>
+          <p>Motivos: {{ coincidencia.motivos.join(', ') }}.</p>
+        </article>
+      </section>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="button" class="secondary-button" *ngIf="paso() > 1" (click)="retroceder()">Atrás</button>
+      <button type="button" class="submit-button" *ngIf="!modoAdministrador && paso() < 4" (click)="avanzar()">Continuar</button>
+      <button type="submit" class="submit-button" *ngIf="modoAdministrador || paso() === 4">
+        {{ modoAdministrador ? 'Guardar' : 'Guardar reporte' }}
+      </button>
+      <button type="button" class="secondary-button" *ngIf="reporteEditar" (click)="cancelarEdicion()">Cancelar edición</button>
+    </div>
+  </form>
+</section>

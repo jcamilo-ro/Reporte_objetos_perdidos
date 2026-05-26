@@ -1,0 +1,29 @@
+<section class="modal-backdrop" *ngIf="modalService.modal() as modal" role="dialog" aria-modal="true" [attr.aria-label]="modal.titulo">
+  <div class="modal-card">
+    <span class="modal-card__eyebrow">
+      {{ modal.tipo === 'prompt' ? 'Solicitud' : modal.tipo === 'confirm' ? 'Confirmación' : 'Aviso' }}
+    </span>
+    <h2>{{ modal.titulo }}</h2>
+    <p>{{ modal.mensaje }}</p>
+
+    <label *ngIf="modal.tipo === 'prompt'" class="modal-field">
+      Observación
+      <textarea
+        rows="4"
+        [placeholder]="modal.placeholder || 'Escribe una observación breve'"
+        [ngModel]="texto()"
+        (ngModelChange)="texto.set($event)"
+      ></textarea>
+      <small *ngIf="modal.error">{{ modal.error }}</small>
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="modal-button modal-button--primary" (click)="aceptar()">
+        {{ modal.confirmarTexto }}
+      </button>
+      <button *ngIf="modal.tipo !== 'info'" type="button" class="modal-button modal-button--secondary" (click)="cancelar()">
+        {{ modal.cancelarTexto || 'Cancelar' }}
+      </button>
+    </div>
+  </div>
+</section>

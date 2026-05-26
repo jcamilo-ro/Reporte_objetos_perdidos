@@ -1,0 +1,25 @@
+<!-- Página de acceso para el administrador simulado. -->
+<section class="login-page">
+  <div class="login-card">
+    <span>Acceso administrativo</span>
+    <h1>Ingresar como administrador</h1>
+    <p>Usa las credenciales de exposición para revisar cambios pendientes, trazabilidad y reportes ocultos.</p>
+
+    <form [formGroup]="formulario" (ngSubmit)="ingresar()" novalidate>
+      <label>
+        Usuario
+        <input type="text" formControlName="usuario" autocomplete="username" />
+      </label>
+
+      <label>
+        Contraseña
+        <input type="password" formControlName="contrasena" autocomplete="current-password" />
+      </label>
+
+      <p class="error" *ngIf="error()">{{ error() }}</p>
+
+      <button type="submit">Ingresar</button>
+      <a routerLink="/inicio">Volver al inicio</a>
+    </form>
+  </div>
+</section>

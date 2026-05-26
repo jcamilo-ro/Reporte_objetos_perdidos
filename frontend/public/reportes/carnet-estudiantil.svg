@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#eef4f1"/>
+  <rect x="210" y="150" width="480" height="300" rx="24" fill="#ffffff" stroke="#9fb8ac" stroke-width="6"/>
+  <rect x="210" y="150" width="480" height="82" rx="24" fill="#0b6b3a"/>
+  <circle cx="315" cy="320" r="58" fill="#dbe7e1"/>
+  <rect x="410" y="292" width="190" height="18" rx="9" fill="#8fa79b"/>
+  <rect x="410" y="330" width="150" height="18" rx="9" fill="#b7c9c0"/>
+  <text x="450" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#ffffff">Carnet estudiantil</text>
+</svg>

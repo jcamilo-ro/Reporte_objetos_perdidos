@@ -1,0 +1,98 @@
+/*
+  Estilos del encabezado compartido. Usa verde institucional, blanco y un acento
+  amarillo sobrio para dar identidad sin recurrir a logos oficiales.
+*/
+.app-header {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #dfe8e3;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  left: 0;
+  padding: 14px clamp(18px, 5vw, 64px);
+  position: sticky;
+  right: 0;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  align-items: center;
+  color: #143f2b;
+  display: inline-flex;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand__mark {
+  align-items: center;
+  background: #0b6b3a;
+  border-radius: 8px;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 800;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+  line-height: 1.15;
+}
+
+.brand small {
+  color: #5f7168;
+  font-size: 0.78rem;
+  margin-top: 3px;
+}
+
+.nav {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.nav a,
+.nav button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #244436;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.93rem;
+  font-weight: 700;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.nav a:hover,
+.nav a:focus-visible,
+.nav button:hover,
+.nav button:focus-visible,
+.nav__link--active {
+  background: #edf6f1;
+  color: #0b6b3a;
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .nav a {
+    background: #f3f7f5;
+    flex: 1 1 150px;
+    text-align: center;
+  }
+}

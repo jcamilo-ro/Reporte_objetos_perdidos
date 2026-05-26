@@ -1,0 +1,10 @@
+<!-- Página de reporte. El componente interno maneja el formulario progresivo. -->
+<app-reporte-form
+  [reporteEditar]="reporteEditar()"
+  [modoAdministrador]="modoAdministrador()"
+  (reporteCreado)="crearReporte($event)"
+  (reporteActualizado)="actualizarReporte($event)"
+  (edicionCancelada)="cancelar()"
+  (consultarReportes)="consultarReportes()"
+  (salir)="salir()"
+/>
