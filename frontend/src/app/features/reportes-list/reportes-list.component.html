@@ -141,10 +141,12 @@
               <ng-container *ngIf="reporte.tipo === 'perdido'; else personaEncontrada">
                 <strong>Perdió: {{ reporte.perdidoPor.nombreCompleto }}</strong>
                 <small>{{ reporte.perdidoPor.tipoPersona }} | {{ reporte.perdidoPor.contacto }}</small>
+                <small *ngIf="reporte.perdidoPor.celular">Celular: {{ reporte.perdidoPor.celular }}</small>
               </ng-container>
               <ng-template #personaEncontrada>
                 <strong>Encontró: {{ reporte.encontradoPor.nombreCompleto }}</strong>
                 <small>{{ reporte.encontradoPor.tipoPersona }} | {{ reporte.encontradoPor.contacto }}</small>
+                <small *ngIf="reporte.encontradoPor.celular">Celular: {{ reporte.encontradoPor.celular }}</small>
               </ng-template>
             </td>
 
