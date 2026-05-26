@@ -86,6 +86,19 @@ export interface CambioPendienteEstado {
 }
 
 /**
+ * Ultimo cambio de estado aprobado. Se mantiene visible para que el usuario
+ * pueda saber que alguien reporto un cambio util y que administracion lo reviso.
+ */
+export interface CambioEstadoAprobado {
+  id: number;
+  estadoAnterior: EstadoReporte;
+  estadoNuevo: EstadoReporte;
+  observacion?: string;
+  fechaAprobacion: string;
+  comentario: string;
+}
+
+/**
  * Caso completo del sistema. Incluye datos visibles, fotografía simulada,
  * validación administrativa, eliminación lógica y trazabilidad.
  */
@@ -114,6 +127,7 @@ export interface ReporteObjeto {
   eliminadoVistaPublica: boolean;
   eliminadoEn?: string;
   cambioPendiente?: CambioPendienteEstado;
+  ultimoCambioEstado?: CambioEstadoAprobado;
   historial: HistorialCambio[];
 }
 

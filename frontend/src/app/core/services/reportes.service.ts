@@ -59,7 +59,7 @@ export class ReportesService {
     };
   });
 
-  agregarReporte(reporte: Omit<ReporteObjeto, 'id' | 'creadoEn' | 'actualizadoEn' | 'entregadoEn' | 'validadoAdministrador' | 'validadoEn' | 'eliminadoVistaPublica' | 'eliminadoEn' | 'cambioPendiente' | 'historial'>): ReporteObjeto {
+  agregarReporte(reporte: Omit<ReporteObjeto, 'id' | 'creadoEn' | 'actualizadoEn' | 'entregadoEn' | 'validadoAdministrador' | 'validadoEn' | 'eliminadoVistaPublica' | 'eliminadoEn' | 'cambioPendiente' | 'ultimoCambioEstado' | 'historial'>): ReporteObjeto {
     const fecha = this.fechaActual();
     const id = Date.now();
     const nuevoReporte: ReporteObjeto = {
@@ -225,11 +225,12 @@ export class ReportesService {
     }
 
     const cambio = reporteActual.cambioPendiente;
+    const fechaAprobacion = this.fechaActual();
     const historial = this.crearHistorial(
       'Aprobación de cambio de estado',
       'estado',
       cambio.estadoAnterior,
-      cambio.estadoSolicitado,
+      cambio.observacion ? `${cambio.estadoSolicitado}. Observacion: ${cambio.observacion}` : cambio.estadoSolicitado,
       'administrador',
       'aprobado'
     );
@@ -240,9 +241,17 @@ export class ReportesService {
           ? {
               ...reporte,
               estado: cambio.estadoSolicitado,
-              entregadoEn: cambio.estadoSolicitado === 'entregado' ? this.fechaActual() : undefined,
+              entregadoEn: cambio.estadoSolicitado === 'entregado' ? fechaAprobacion : undefined,
               cambioPendiente: undefined,
-              actualizadoEn: this.fechaActual(),
+              ultimoCambioEstado: {
+                id: cambio.id,
+                estadoAnterior: cambio.estadoAnterior,
+                estadoNuevo: cambio.estadoSolicitado,
+                observacion: cambio.observacion,
+                fechaAprobacion,
+                comentario: 'Acción aprobada por el administrador.'
+              },
+              actualizadoEn: fechaAprobacion,
               historial: [...reporte.historial, historial]
             }
           : reporte
@@ -620,6 +629,7 @@ export class ReportesService {
       actualizadoEn: '',
       entregadoEn: '',
       cambioPendiente: undefined,
+      ultimoCambioEstado: reporte.ultimoCambioEstado,
       historial: []
     });
   }
@@ -644,6 +654,7 @@ export class ReportesService {
       imagenUrl: reporte.imagenUrl ?? this.imagenSugerida(reporte),
       validadoAdministrador: reporte.validadoAdministrador ?? false,
       eliminadoVistaPublica: reporte.eliminadoVistaPublica ?? false,
+      ultimoCambioEstado: reporte.ultimoCambioEstado,
       historial: reporte.historial ?? [
         this.crearHistorial('Migración local', 'sistema', 'Sin historial', 'Historial creado', 'administrador', 'no_aplica')
       ]
@@ -683,7 +694,7 @@ export class ReportesService {
     const ahora = this.fechaActual();
     const haceOchoDias = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
 
-    const crear = (reporte: Omit<ReporteObjeto, 'creadoEn' | 'actualizadoEn' | 'validadoAdministrador' | 'validadoEn' | 'eliminadoVistaPublica' | 'historial'>): ReporteObjeto => ({
+    const crear = (reporte: Omit<ReporteObjeto, 'creadoEn' | 'actualizadoEn' | 'validadoAdministrador' | 'validadoEn' | 'eliminadoVistaPublica' | 'ultimoCambioEstado' | 'historial'>): ReporteObjeto => ({
       ...reporte,
       creadoEn: reporte.entregadoEn ?? ahora,
       actualizadoEn: reporte.entregadoEn ?? ahora,

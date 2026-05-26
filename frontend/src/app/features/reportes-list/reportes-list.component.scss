@@ -386,6 +386,33 @@ td small {
   margin: 0 0 8px;
 }
 
+.detail-change-note {
+  background: #fff8e7;
+  border: 1px solid #f1d995;
+  border-left: 4px solid #c47b00;
+  border-radius: 6px;
+  color: #5d4100;
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 10px 12px;
+}
+
+.detail-change-note > strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.detail-change-note span {
+  font-weight: 900;
+}
+
+.detail-change-note p,
+.detail-change-note small {
+  color: #5d4100;
+  margin: 0;
+}
+
 .history {
   display: grid;
   gap: 10px;

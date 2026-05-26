@@ -71,11 +71,11 @@
         <ng-container *ngFor="let reporte of reportes">
           <tr
             [class.row-hidden]="reporte.eliminadoVistaPublica"
-            [class.row-pending-change]="reporte.cambioPendiente"
+            [class.row-pending-change]="tieneCambioEstadoVisible(reporte)"
           >
             <td data-label="Caso">
               <div class="case-title">
-                <span *ngIf="reporte.cambioPendiente" class="alert-dot" aria-hidden="true">!</span>
+                <span *ngIf="reporte.cambioPendiente || reporte.ultimoCambioEstado" class="alert-dot" aria-hidden="true">!</span>
                 <strong>{{ reporte.nombre }}</strong>
               </div>
               <small *ngIf="reporte.codigo">Código: {{ reporte.codigo }}</small>
@@ -92,33 +92,31 @@
                 }}
               </p>
               <p *ngIf="reporte.eliminadoVistaPublica" class="hidden-alert">Oculto de la vista pública.</p>
-              <ng-container *ngIf="reporte.cambioPendiente as cambio">
-                <div *ngIf="cambio.tipoSolicitud === 'estado'" class="pending-change-detail">
-                  <strong>Cambio solicitado</strong>
-                  <span>
-                    {{ etiquetaEstado(cambio.estadoAnterior) }}
-                    ->
-                    {{ etiquetaEstado(cambio.estadoSolicitado) }}
-                  </span>
-                  <small *ngIf="cambio.observacion">Observación: {{ cambio.observacion }}</small>
-                </div>
-              </ng-container>
+              <div *ngIf="tieneCambioEstadoVisible(reporte)" class="pending-change-detail">
+                <strong>{{ reporte.cambioPendiente ? 'Cambio solicitado' : 'Cambio aprobado' }}</strong>
+                <span>
+                  {{ etiquetaEstado(cambioEstadoAnterior(reporte)!) }}
+                  ->
+                  {{ etiquetaEstado(cambioEstadoNuevo(reporte)!) }}
+                </span>
+                <small *ngIf="observacionCambioEstado(reporte)">Observación: {{ observacionCambioEstado(reporte) }}</small>
+                <small>{{ comentarioCambioEstado(reporte) }}</small>
+              </div>
             </td>
 
             <td data-label="Estado">
               <span [class]="claseEstado(reporte)">{{ reporte.estado }}</span>
               <span *ngIf="reporte.validadoAdministrador" class="validated-badge">Validado</span>
-              <ng-container *ngIf="reporte.cambioPendiente as cambio">
-                <div *ngIf="cambio.tipoSolicitud === 'estado'" class="change-summary">
-                  <strong>Cambio solicitado</strong>
-                  <span>
-                    {{ etiquetaEstado(cambio.estadoAnterior) }}
-                    ->
-                    {{ etiquetaEstado(cambio.estadoSolicitado) }}
-                  </span>
-                  <small *ngIf="cambio.observacion">{{ cambio.observacion }}</small>
-                </div>
-              </ng-container>
+              <div *ngIf="tieneCambioEstadoVisible(reporte)" class="change-summary">
+                <strong>{{ reporte.cambioPendiente ? 'Cambio solicitado' : 'Cambio aprobado' }}</strong>
+                <span>
+                  {{ etiquetaEstado(cambioEstadoAnterior(reporte)!) }}
+                  ->
+                  {{ etiquetaEstado(cambioEstadoNuevo(reporte)!) }}
+                </span>
+                <small *ngIf="observacionCambioEstado(reporte)">{{ observacionCambioEstado(reporte) }}</small>
+                <small>{{ comentarioCambioEstado(reporte) }}</small>
+              </div>
               <label class="inline-control">
                 {{ modoAdministrador ? 'Cambiar estado' : 'Solicitar cambio de estado' }}
                 <select [ngModel]="reporte.estado" [disabled]="!!reporte.cambioPendiente && !modoAdministrador" (ngModelChange)="cambiarEstado(reporte, $event)">
@@ -214,6 +212,19 @@
                 <div>
                   <h3>Detalle del caso</h3>
                   <p><strong>Observaciones:</strong> {{ reporte.observaciones || 'Sin observaciones.' }}</p>
+                  <div *ngIf="tieneCambioEstadoVisible(reporte)" class="detail-change-note">
+                    <strong>{{ reporte.cambioPendiente ? 'Cambio de estado solicitado' : 'Cambio de estado aprobado' }}</strong>
+                    <span>
+                      {{ etiquetaEstado(cambioEstadoAnterior(reporte)!) }}
+                      ->
+                      {{ etiquetaEstado(cambioEstadoNuevo(reporte)!) }}
+                    </span>
+                    <p *ngIf="observacionCambioEstado(reporte)">
+                      <strong>Observación de quien solicitó el cambio:</strong>
+                      {{ observacionCambioEstado(reporte) }}
+                    </p>
+                    <small>{{ comentarioCambioEstado(reporte) }}</small>
+                  </div>
                   <p>
                     <strong>Manejo:</strong>
                     {{ reporte.accionObjeto === 'otro_lugar' ? 'Se deja en: ' + (reporte.lugarEntrega || 'lugar por confirmar') : 'Entrega directa al dueño' }}

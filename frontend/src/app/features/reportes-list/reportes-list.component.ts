@@ -104,6 +104,34 @@ export class ReportesListComponent {
     return this.estados.find((opcion) => opcion.valor === estado)?.etiqueta ?? estado;
   }
 
+  tieneCambioEstadoVisible(reporte: ReporteObjeto): boolean {
+    return reporte.cambioPendiente?.tipoSolicitud === 'estado' || Boolean(reporte.ultimoCambioEstado);
+  }
+
+  cambioEstadoAnterior(reporte: ReporteObjeto): EstadoReporte | null {
+    return reporte.cambioPendiente?.tipoSolicitud === 'estado'
+      ? reporte.cambioPendiente.estadoAnterior
+      : reporte.ultimoCambioEstado?.estadoAnterior ?? null;
+  }
+
+  cambioEstadoNuevo(reporte: ReporteObjeto): EstadoReporte | null {
+    return reporte.cambioPendiente?.tipoSolicitud === 'estado'
+      ? reporte.cambioPendiente.estadoSolicitado
+      : reporte.ultimoCambioEstado?.estadoNuevo ?? null;
+  }
+
+  observacionCambioEstado(reporte: ReporteObjeto): string {
+    return reporte.cambioPendiente?.tipoSolicitud === 'estado'
+      ? reporte.cambioPendiente.observacion ?? ''
+      : reporte.ultimoCambioEstado?.observacion ?? '';
+  }
+
+  comentarioCambioEstado(reporte: ReporteObjeto): string {
+    return reporte.cambioPendiente?.tipoSolicitud === 'estado'
+      ? 'Pendiente de aprobación administrativa.'
+      : reporte.ultimoCambioEstado?.comentario ?? '';
+  }
+
   abrirFotografia(reporte: ReporteObjeto): void {
     this.fotografiaActiva = reporte;
     this.fotografiaConError = false;
